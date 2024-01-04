@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Like } from "src/like/entity/like.entity";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class Member extends BaseEntity {
@@ -22,4 +29,7 @@ export class Member extends BaseEntity {
 
   @Column({ nullable: true, unique: true })
   secretKey?: string;
+
+  @OneToOne(() => Like, (like) => like.member)
+  like: Like;
 }

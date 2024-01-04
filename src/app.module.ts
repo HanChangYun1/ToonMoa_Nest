@@ -5,6 +5,8 @@ import { MemberModule } from "./member/member.module";
 import { ToonModule } from "./toon/toon.module";
 import { SearchModule } from "./search/search.module";
 import { SocketModule } from "./socket/socket.module";
+import { LikeModule } from './like/like.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { SocketModule } from "./socket/socket.module";
     ToonModule,
     SearchModule,
     SocketModule,
+    LikeModule,
+    CommentModule,
   ],
 })
 export class AppModule {}

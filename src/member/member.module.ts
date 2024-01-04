@@ -7,6 +7,8 @@ import { PassportModule } from "@nestjs/passport";
 import { GoogleStrategy } from "./stratagy/google.strategy";
 import { KakaoStrategy } from "./stratagy/kakao.strategy";
 import { JwtModule } from "@nestjs/jwt";
+import { StorageModule } from "./storage.module";
+import { Storage } from "@google-cloud/storage";
 
 @Module({
   imports: [
@@ -17,8 +19,9 @@ import { JwtModule } from "@nestjs/jwt";
       secret: process.env.ACCESS_TOKEN_PRIVATE_KEY,
       signOptions: { expiresIn: "24h" },
     }),
+    StorageModule,
   ],
   controllers: [MemberController],
-  providers: [MemberService, GoogleStrategy, KakaoStrategy],
+  providers: [MemberService, GoogleStrategy, KakaoStrategy, Storage],
 })
 export class MemberModule {}
