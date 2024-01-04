@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { sign, verify } from "jsonwebtoken";
 import { Member } from "./entity/member.entity";
@@ -16,11 +16,34 @@ export class MemberService {
   private storage: Storage;
   private readonly bucketName = process.env.GCP_BUCKETNAME;
 
+  async testLogin() {
+    try {
+      const member = await this.memberRepository.findOne({
+        where: { email: "hansyooni11@gmail.com" },
+      });
+      const token = await this.login(member);
+      const accessToken = `Bearer ${token}`;
+      return accessToken;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async login(user: Member): Promise<string> {
+    const payload = { user: { email: user.email } };
+    const accesstoken = this.generateAccessToken(payload);
+    return accesstoken;
+  }
+
   private generateAccessToken(user: any): string {
     const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
     const expiresIn = "24h";
+    const accessToken2 = this.jwtService.sign(
+      { user },
+      { expiresIn, secret: secretKey }
+    );
     const accessToken = sign({ user }, secretKey, { expiresIn });
-    return accessToken;
+    return accessToken2;
   }
 
   async findByEmailOrSave(email, photo, name): Promise<Member> {
