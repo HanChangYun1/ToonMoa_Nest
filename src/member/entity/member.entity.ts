@@ -11,7 +11,7 @@ export class Member extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   phonenum: string;
 
   @Column()

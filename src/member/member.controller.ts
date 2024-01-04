@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Post,
   Put,
   Req,
   Res,
@@ -21,6 +22,22 @@ export class MemberController {
     private readonly memberService: MemberService,
     private jwtService: JwtService
   ) {}
+
+  @Post("testLogin")
+  async testLogin(@Res() res) {
+    try {
+      const accessToken = await this.memberService.testLogin();
+      res.cookie("Authorization", accessToken, {
+        httpOnly: false,
+        secure: true,
+        path: "/",
+      });
+      res.status(201).send("localLogin ok");
+    } catch (error) {
+      console.error("Error in localLogin:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
 
   private generateAccessToken(user: any): string {
     const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
@@ -69,9 +86,14 @@ export class MemberController {
     }
   }
 
-  @Get("logout")
+  @Post("logout")
   async logout(@Res() res) {
-    res.clearCookie("Authorization", { path: "/" });
+    try {
+      res.clearCookie("Authorization", { path: "/" });
+      res.status(200).send("Logout successful");
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   // @Put("update")
