@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class ToonService {}
+export class ToonService {
+  // async getGenre(){
+  //     const toon = await
+  // }
+}
