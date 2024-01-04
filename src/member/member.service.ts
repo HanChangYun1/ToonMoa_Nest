@@ -1,19 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { sign, verify } from "jsonwebtoken";
 import { Member } from "./entity/member.entity";
 import { Repository } from "typeorm";
 import { randomUUID } from "crypto";
 import { JwtService } from "@nestjs/jwt";
+import { UpdateUserDto } from "./dto/updateuser.dto";
+import { Storage } from "@google-cloud/storage";
 
 @Injectable()
 export class MemberService {
   constructor(
     @InjectRepository(Member)
     private memberRepository: Repository<Member>,
-    private jwtService: JwtService
-  ) {}
-  private storage: Storage;
+    private jwtService: JwtService,
+    private storage: Storage
+  ) {
+    this.storage = new Storage({
+      projectId: "toonmoa",
+      keyFilename: "./toonmoa-3bbc9ada2044.json",
+    });
+  }
   private readonly bucketName = process.env.GCP_BUCKETNAME;
 
   async testLogin() {
@@ -38,12 +44,11 @@ export class MemberService {
   private generateAccessToken(user: any): string {
     const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
     const expiresIn = "24h";
-    const accessToken2 = this.jwtService.sign(
+    const accessToken = this.jwtService.sign(
       { user },
       { expiresIn, secret: secretKey }
     );
-    const accessToken = sign({ user }, secretKey, { expiresIn });
-    return accessToken2;
+    return accessToken;
   }
 
   async findByEmailOrSave(email, photo, name): Promise<Member> {
@@ -66,36 +71,29 @@ export class MemberService {
     return user;
   }
 
-  // async update(token, dto: UpdateUserDto, photo) {
-  //   const decodeToken = await this.decodeToken(token);
-  //   const { user, type } = decodeToken;
+  async update(token, dto: UpdateUserDto, photo) {
+    try {
+      console.log(dto.name, dto.phonenum);
+      console.log(photo);
 
-  //   if (type === "localBuyer") {
-  //     const localBuyer = await this.memberRepository.findOne({
-  //       where: { email: user.email },
-  //     });
-  //     if (dto.email) localBuyer.email = dto.email;
-  //     if (dto.name) localBuyer.name = dto.name;
-  //     if (photo) {
-  //       this.imageUpload(photo, localBuyer);
-  //     }
-  //     const updateBuyer = await this.memberRepository.save(localBuyer);
-  //     return updateBuyer;
-  //   } else if (type === "socialBuyer") {
-  //     const socialBuyer = await this.memberRepository.findOne({
-  //       where: { email: user.email },
-  //     });
-  //     if (dto.email) socialBuyer.email = dto.email;
-  //     if (dto.name) socialBuyer.name = dto.name;
-  //     if (photo) {
-  //       this.imageUpload(photo, socialBuyer);
-  //     }
-  //     const updateBuyer = await this.memberRepository.save(socialBuyer);
-  //     return updateBuyer;
-  //   } else {
-  //     return "잘못된 유저정보 입니다.";
-  //   }
-  // }
+      const decodeToken = await this.decodeToken(token);
+      const { user } = decodeToken;
+
+      const member = await this.getUser(user.email);
+      console.log(member);
+
+      if (!member) return "잘못된 유저정보 입니다.";
+      if (dto.name) member.name = dto.name;
+      if (dto.phonenum) member.phonenum = dto.phonenum;
+      if (photo) {
+        this.imageUpload(photo, member);
+      }
+      const updateBuyer = await this.memberRepository.save(member);
+      return updateBuyer;
+    } catch (e) {
+      return e;
+    }
+  }
 
   async imageUpload(photo, buyer) {
     const fileName = `${Date.now()}_${randomUUID()}`;
@@ -119,11 +117,9 @@ export class MemberService {
 
   async withdrawal(token) {
     const decodeToken = await this.decodeToken(token);
-    const { user, type } = decodeToken;
+    const { user } = decodeToken;
 
-    const member = await this.memberRepository.findOne({
-      where: { email: user.email },
-    });
+    const member = await this.getUser(user.email);
     if (!member) return "잘못된 유저정보입니다.";
 
     const deleteResult = await this.memberRepository.delete({
@@ -136,13 +132,11 @@ export class MemberService {
     }
   }
 
-  async getBuyer(token) {
+  async getMember(token) {
     const decodeToken = await this.decodeToken(token);
-    const { user, type } = decodeToken;
+    const { user } = decodeToken;
 
-    const member = await this.memberRepository.findOne({
-      where: { email: user.email },
-    });
+    const member = await this.getUser(user.email);
     if (!member) return "잘못된 유저정보입니다.";
     return member;
   }
@@ -150,14 +144,10 @@ export class MemberService {
   async decodeToken(token) {
     try {
       const verifiedToken = token.split(" ")[1];
-      const decodeToken2 = this.jwtService.verify(verifiedToken, {
+      const decodeToken = this.jwtService.verify(verifiedToken, {
         secret: process.env.ACCESS_TOKEN_PRIVATE_KEY,
       });
-      const decodeToken = verify(
-        verifiedToken,
-        process.env.ACCESS_TOKEN_PRIVATE_KEY
-      );
-      return decodeToken2;
+      return decodeToken;
     } catch (e) {
       console.error("decodeToken Error:", e);
       return null;

@@ -29,8 +29,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     profile: Profile,
     done: VerifyCallback
   ): Promise<any> {
-    console.log(profile);
-
     const { emails, photos, displayName } = profile;
     const email = emails[0].value;
     const photo = photos[0].value;
@@ -42,7 +40,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         name
       );
 
-      const payload = { user: { email: user.email }, type: "socialBuyer" };
+      const payload = { user: { email: user.email } };
       done(null, payload);
     } catch (error) {
       done(error, false);

@@ -28,7 +28,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
 
     const user = await this.memberService.findByEmailOrSave(email, photo, name);
 
-    const payload = { user: { email: user.email }, type: "socailBuyer" };
+    const payload = { user: { email: user.email } };
     done(null, { payload });
   }
 }

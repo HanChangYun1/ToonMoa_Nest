@@ -16,6 +16,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { sign } from "jsonwebtoken";
 import { JwtService } from "@nestjs/jwt";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { UpdateUserDto } from "./dto/updateuser.dto";
 @Controller("member")
 export class MemberController {
   constructor(
@@ -96,18 +97,19 @@ export class MemberController {
     }
   }
 
-  // @Put("update")
-  // @UseInterceptors(FileInterceptor("photo"))
-  // async updateUser(
-  //   @Req() req,
-  //   @Res() res,
-  //   @UploadedFile() photo,
-  //   @Body() dto: UpdateUserDto
-  // ) {
-  //   const token = req.cookies.Authorization;
-  //   const result = await this.memberService.update(token, dto, photo);
-  //   res.send(result);
-  // }
+  @Put("update")
+  @UseInterceptors(FileInterceptor("photo"))
+  async updateUser(
+    @Req() req,
+    @Res() res,
+    @UploadedFile() photo,
+    @Body() dto: UpdateUserDto
+  ) {
+    const token = req.cookies.Authorization;
+    console.log(photo);
+    const result = await this.memberService.update(token, dto, photo);
+    res.send(result);
+  }
 
   @Delete("withdrawal")
   async withdrawalUser(@Req() req, @Res() res) {
@@ -119,7 +121,7 @@ export class MemberController {
   @Get()
   async getBuyer(@Req() req, @Res() res) {
     const token = req.cookies.Authorization;
-    const buyer = await this.memberService.getBuyer(token);
+    const buyer = await this.memberService.getMember(token);
     res.send(buyer);
   }
 }
