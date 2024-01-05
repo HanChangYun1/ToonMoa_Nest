@@ -11,9 +11,6 @@ export class ToonController {
   @Get("/popularity")
   async getToonByPopularity(@Req() req, @Res() res) {}
 
-  @Get("/favorite")
-  async getToonByFavorite(@Req() req, @Res() res) {}
-
   @Get("/like")
   async getToonByLike(@Req() req, @Res() res) {}
 }
