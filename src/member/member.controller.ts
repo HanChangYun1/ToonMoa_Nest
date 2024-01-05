@@ -105,8 +105,6 @@ export class MemberController {
     @Body() dto: UpdateUserDto
   ) {
     const token = req.cookies.Authorization;
-    console.log(photo);
-    console.log(dto);
 
     const result = await this.memberService.update(token, dto, photo);
     res.send(result);
