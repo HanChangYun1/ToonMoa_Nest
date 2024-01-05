@@ -1,3 +1,4 @@
+import { Comment } from "src/comment/entity/comment.entity";
 import { Like } from "src/like/entity/like.entity";
 import { SearchHistory } from "src/search/entity/search.entity";
 import {
@@ -34,6 +35,9 @@ export class Member extends BaseEntity {
 
   @OneToMany(() => Like, (like) => like.member)
   likes: Like[];
+
+  @OneToMany(() => Comment, (comment) => comment.member)
+  comments: Comment[];
 
   @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.member)
   searchHistory: SearchHistory[];
