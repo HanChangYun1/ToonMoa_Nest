@@ -43,12 +43,11 @@ export class MemberController {
   private generateAccessToken(user: any): string {
     const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
     const expiresIn = "24h";
-    const accessToken2 = this.jwtService.sign(
+    const accessToken = this.jwtService.sign(
       { user },
       { expiresIn, secret: secretKey }
     );
-    const accessToken = sign({ user }, secretKey, { expiresIn });
-    return accessToken2;
+    return accessToken;
   }
 
   @Get("google/callback")
@@ -121,9 +120,10 @@ export class MemberController {
   }
 
   @Get()
-  async getBuyer(@Req() req, @Res() res) {
+  async getMember(@Req() req, @Res() res) {
     const token = req.cookies.Authorization;
-    const buyer = await this.memberService.getMember(token);
-    res.send(buyer);
+
+    const member = await this.memberService.getMember(token);
+    res.send(member);
   }
 }
