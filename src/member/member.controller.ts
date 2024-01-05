@@ -3,8 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Patch,
   Post,
-  Put,
   Req,
   Res,
   UploadedFile,
@@ -97,7 +97,7 @@ export class MemberController {
     }
   }
 
-  @Put("update")
+  @Patch("update")
   @UseInterceptors(FileInterceptor("photo"))
   async updateUser(
     @Req() req,
@@ -107,6 +107,8 @@ export class MemberController {
   ) {
     const token = req.cookies.Authorization;
     console.log(photo);
+    console.log(dto);
+
     const result = await this.memberService.update(token, dto, photo);
     res.send(result);
   }

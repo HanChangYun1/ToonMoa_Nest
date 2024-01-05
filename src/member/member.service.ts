@@ -27,6 +27,7 @@ export class MemberService {
       const member = await this.memberRepository.findOne({
         where: { email: "hansyooni11@gmail.com" },
       });
+      console.log(member);
       const token = await this.login(member);
       const accessToken = `Bearer ${token}`;
       return accessToken;
@@ -73,42 +74,42 @@ export class MemberService {
 
   async update(token, dto: UpdateUserDto, photo) {
     try {
-      console.log(dto.name, dto.phonenum);
-      console.log(photo);
-
       const decodeToken = await this.decodeToken(token);
       const { user } = decodeToken;
 
       const member = await this.getUser(user.email);
-      console.log(member);
 
       if (!member) return "잘못된 유저정보 입니다.";
       if (dto.name) member.name = dto.name;
       if (dto.phonenum) member.phonenum = dto.phonenum;
       if (photo) {
-        this.imageUpload(photo, member);
+        await this.imageUpload(photo, member);
       }
       const updateBuyer = await this.memberRepository.save(member);
       return updateBuyer;
     } catch (e) {
-      return e;
+      throw new Error(e);
     }
   }
 
-  async imageUpload(photo, buyer) {
+  async imageUpload(photo, member: Member) {
     const fileName = `${Date.now()}_${randomUUID()}`;
     const bucket = this.storage.bucket(this.bucketName);
+
     const blob = bucket.file(fileName);
+
     const blobStream = blob.createWriteStream();
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       blobStream.on("error", (error) => {
         throw new Error(`Unable to upload profile picture: ${error}`);
       });
 
       blobStream.on("finish", async () => {
+        console.log("Finish event triggered");
         const photoUrl = `https://storage.googleapis.com/${this.bucketName}/${fileName}`;
-        buyer.photo = photoUrl;
+        member.photo = photoUrl;
+        resolve();
       });
 
       blobStream.end(photo.buffer);

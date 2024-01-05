@@ -23,5 +23,6 @@ import { Storage } from "@google-cloud/storage";
   ],
   controllers: [MemberController],
   providers: [MemberService, GoogleStrategy, KakaoStrategy, Storage],
+  exports: [MemberService],
 })
 export class MemberModule {}

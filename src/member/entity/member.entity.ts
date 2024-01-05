@@ -3,6 +3,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -30,6 +31,6 @@ export class Member extends BaseEntity {
   @Column({ nullable: true, unique: true })
   secretKey?: string;
 
-  @OneToOne(() => Like, (like) => like.member)
+  @OneToMany(() => Like, (like) => like.member)
   like: Like;
 }
