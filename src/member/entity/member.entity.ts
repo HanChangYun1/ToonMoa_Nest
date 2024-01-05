@@ -1,8 +1,10 @@
 import { Like } from "src/like/entity/like.entity";
+import { SearchHistory } from "src/search/entity/search.entity";
 import {
   BaseEntity,
   Column,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -32,4 +34,7 @@ export class Member extends BaseEntity {
 
   @OneToOne(() => Like, (like) => like.member)
   like: Like;
+
+  @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.member)
+  searchHistory: SearchHistory[];
 }

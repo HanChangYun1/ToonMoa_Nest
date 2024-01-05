@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 
-// TypeScript 인터페이스 정의
 interface WebtoonInfo {
   _id: string;
   webtoonId: number;
@@ -9,8 +8,8 @@ interface WebtoonInfo {
   url: string;
   img: string;
   service: string;
-  updateDays: string | string[]; // updateDays는 string 배열
-  fanCount: number | null; // fanCount가 null일 수 있음
+  updateDays: string | string[];
+  fanCount: number | null;
   searchKeyword: string;
   additional: AdditionalInfo;
 }
@@ -20,14 +19,13 @@ interface AdditionalInfo {
   rest: boolean;
   up: boolean;
   adult: boolean;
-  singularityList: string[]; // singularityList는 string 배열
+  singularityList: string[]; //
 }
 
 interface ApiResponse {
   webtoons: WebtoonInfo[];
 }
 
-// API 요청 함수
 async function WebtoonList(
   page: number = 0,
   perPage: number = 1,
@@ -76,6 +74,3 @@ async function fetchAndPrintWebtoons() {
     console.log(webtoon);
   });
 }
-
-// 함수 호출
-fetchAndPrintWebtoons();

@@ -3,7 +3,6 @@ import axios from "axios";
 interface WebtoonResult {
   title: string;
   author: string;
-  // 여기에 다른 웹툰 정보에 대한 필드를 추가할 수 있습니다.
 }
 
 interface ApiResponse {
@@ -35,6 +34,3 @@ export async function webtoonSearch(keyword: string): Promise<void> {
     console.error("Error during API request:", error);
   }
 }
-
-const result = webtoonSearch("호랑이형님");
-console.log(result);
