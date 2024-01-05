@@ -1,8 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { WebtoonDateList, WebtoonServiceList } from "src/api/webtoonList";
 
 @Injectable()
 export class ToonService {
-  // async getGenre(){
-  //     const toon = await
-  // }
+  getToonService(service: string) {
+    WebtoonServiceList(service);
+  }
+
+  getToonDate(service: string, updateday: string) {
+    WebtoonDateList(service, updateday);
+  }
 }
