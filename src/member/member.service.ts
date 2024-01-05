@@ -6,6 +6,7 @@ import { randomUUID } from "crypto";
 import { JwtService } from "@nestjs/jwt";
 import { UpdateUserDto } from "./dto/updateuser.dto";
 import { Storage } from "@google-cloud/storage";
+import { log } from "console";
 
 @Injectable()
 export class MemberService {
@@ -27,9 +28,10 @@ export class MemberService {
       const member = await this.memberRepository.findOne({
         where: { email: "hansyooni11@gmail.com" },
       });
-      console.log(member);
       const token = await this.login(member);
+
       const accessToken = `Bearer ${token}`;
+
       return accessToken;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
@@ -37,7 +39,7 @@ export class MemberService {
   }
 
   async login(user: Member): Promise<string> {
-    const payload = { user: { email: user.email } };
+    const payload = { email: user.email };
     const accesstoken = this.generateAccessToken(payload);
     return accesstoken;
   }
@@ -134,12 +136,16 @@ export class MemberService {
   }
 
   async getMember(token) {
-    const decodeToken = await this.decodeToken(token);
-    const { user } = decodeToken;
+    try {
+      const decodeToken = await this.decodeToken(token);
 
-    const member = await this.getUser(user.email);
-    if (!member) return "잘못된 유저정보입니다.";
-    return member;
+      const { user } = decodeToken;
+
+      const member = await this.getUser(user.email);
+      return member;
+    } catch (e) {
+      console.error("잘못된 유저정보입니다:", e);
+    }
   }
 
   async decodeToken(token) {

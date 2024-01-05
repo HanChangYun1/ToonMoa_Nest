@@ -33,7 +33,7 @@ export class Member extends BaseEntity {
   secretKey?: string;
 
   @OneToMany(() => Like, (like) => like.member)
-  like: Like;
+  likes: Like[];
 
   @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.member)
   searchHistory: SearchHistory[];

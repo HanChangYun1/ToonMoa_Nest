@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -15,16 +16,22 @@ export class Like extends BaseEntity {
   id: number;
 
   @Column()
-  toonName: string;
+  service: string;
 
   @Column()
+  webtoonId: string;
+
+  @Column({ nullable: true })
   episode: string;
 
-  @OneToOne(() => Member, (member) => member.like)
+  @ManyToOne(() => Member, (member) => member.likes, { onDelete: "CASCADE" })
   @JoinColumn()
   member: Member;
 
-  @OneToOne(() => Comment, (comment) => comment.like)
+  @ManyToOne(() => Comment, (comment) => comment.likes, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   comment: Comment;
 }

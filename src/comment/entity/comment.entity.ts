@@ -4,6 +4,7 @@ import {
   BaseEntity,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -13,7 +14,6 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Like, (like) => like.comment)
-  @JoinColumn()
-  like: Like;
+  @OneToMany(() => Like, (like) => like.comment)
+  likes: Like[];
 }
