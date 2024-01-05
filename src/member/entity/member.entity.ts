@@ -1,4 +1,5 @@
 import { Like } from "src/like/entity/like.entity";
+import { SearchHistory } from "src/search/entity/search.entity";
 import {
   BaseEntity,
   Column,
@@ -33,4 +34,7 @@ export class Member extends BaseEntity {
 
   @OneToMany(() => Like, (like) => like.member)
   like: Like;
+
+  @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.member)
+  searchHistory: SearchHistory[];
 }

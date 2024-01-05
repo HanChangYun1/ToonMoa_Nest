@@ -1,8 +1,12 @@
 import { Module } from "@nestjs/common";
-import { SearchService } from "./search.service";
 import { SearchController } from "./search.controller";
+import { SearchHistory } from "./entity/search.entity";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Member } from "src/member/entity/member.entity";
+import { SearchService } from "./search.service";
 
 @Module({
+  imports: [TypeOrmModule.forFeature([SearchHistory, Member])],
   controllers: [SearchController],
   providers: [SearchService],
 })
