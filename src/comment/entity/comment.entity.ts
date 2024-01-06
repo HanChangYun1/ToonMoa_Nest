@@ -24,11 +24,17 @@ export class Comment extends BaseEntity {
   @Column()
   content: string;
 
+  @Column({ default: false })
+  isRemoved: boolean;
+
   @ManyToOne(() => Comment, (parent) => parent.children, { nullable: true })
   @JoinColumn({ name: "parentId" })
   parent: Comment;
 
-  @OneToMany(() => Comment, (children) => children.parent, { nullable: true })
+  @OneToMany(() => Comment, (children) => children.parent, {
+    nullable: true,
+    cascade: ["remove"],
+  })
   @JoinColumn()
   children: Comment[];
 

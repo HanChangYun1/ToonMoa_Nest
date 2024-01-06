@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Req, Res } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Res,
+} from "@nestjs/common";
 import { CommentService } from "./comment.service";
 
 @Controller("comment")
@@ -50,6 +60,33 @@ export class CommentController {
     @Param("webtoonId") webtoonId: string
   ) {
     const result = await this.commentService.getAllComments(service, webtoonId);
+    res.json(result);
+  }
+
+  @Patch("/:commentId")
+  async updateComment(
+    @Req() req,
+    @Res() res,
+    @Param("commentId") commentId: string,
+    @Body("content") content: string
+  ) {
+    const token = req.cookies.Authorization;
+    const result = await this.commentService.updateComment(
+      token,
+      commentId,
+      content
+    );
+    res.json(result);
+  }
+
+  @Delete("/:commentId")
+  async deleteComment(
+    @Req() req,
+    @Res() res,
+    @Param("commentId") commentId: string
+  ) {
+    const token = req.cookies.Authorization;
+    const result = await this.commentService.deleteComment(token, commentId);
     res.json(result);
   }
 }

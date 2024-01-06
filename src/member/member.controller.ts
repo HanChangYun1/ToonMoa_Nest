@@ -13,7 +13,6 @@ import {
 } from "@nestjs/common";
 import { MemberService } from "./member.service";
 import { AuthGuard } from "@nestjs/passport";
-import { sign } from "jsonwebtoken";
 import { JwtService } from "@nestjs/jwt";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UpdateUserDto } from "./dto/updateuser.dto";
@@ -105,7 +104,6 @@ export class MemberController {
     @Body() dto: UpdateUserDto
   ) {
     const token = req.cookies.Authorization;
-
     const result = await this.memberService.update(token, dto, photo);
     res.send(result);
   }
@@ -120,7 +118,6 @@ export class MemberController {
   @Get()
   async getMember(@Req() req, @Res() res) {
     const token = req.cookies.Authorization;
-
     const member = await this.memberService.getMember(token);
     res.send(member);
   }
