@@ -6,7 +6,6 @@ import { randomUUID } from "crypto";
 import { JwtService } from "@nestjs/jwt";
 import { UpdateUserDto } from "./dto/updateuser.dto";
 import { Storage } from "@google-cloud/storage";
-import { log } from "console";
 
 @Injectable()
 export class MemberService {
@@ -29,9 +28,7 @@ export class MemberService {
         where: { email: "hansyooni11@gmail.com" },
       });
       const token = await this.login(member);
-
       const accessToken = `Bearer ${token}`;
-
       return accessToken;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

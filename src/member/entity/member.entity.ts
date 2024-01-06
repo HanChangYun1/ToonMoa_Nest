@@ -36,7 +36,9 @@ export class Member extends BaseEntity {
   @OneToMany(() => Like, (like) => like.member)
   likes: Like[];
 
-  @OneToMany(() => Comment, (comment) => comment.member)
+  @OneToMany(() => Comment, (comment) => comment.member, {
+    cascade: ["remove"],
+  })
   comments: Comment[];
 
   @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.member)
