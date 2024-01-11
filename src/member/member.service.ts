@@ -63,6 +63,20 @@ export class MemberService {
     }
     return isUser;
   }
+  async findByEmailOrSave2(email, profile){
+    const name = profile.nickname;
+    const photo = profile.profile_image_url;
+    const isUser = await this.getUser(email);
+    if (!isUser) {
+      const newUser = await this.memberRepository.save({
+        email,
+        photo,
+        name,
+      });
+      return newUser;
+    }
+    return isUser;
+  }
 
   async getUser(email: string): Promise<Member> {
     const user = await this.memberRepository.findOne({

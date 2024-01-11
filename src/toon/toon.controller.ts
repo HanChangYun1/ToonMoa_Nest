@@ -1,20 +1,30 @@
-import { Controller, Get, Param } from "@nestjs/common";
-import { ToonService } from "./toon.service";
+import { Controller, Get, Query, Param, Req, Res } from "@nestjs/common";
+import {
+  getKakaoWebtoons,
+  getNaverWebtoons,
+  getWebtoonsByDate,
+} from "src/api/webtoonList";
 
 @Controller("toon")
 export class ToonController {
-  constructor(private readonly toonService: ToonService) {}
-
-  @Get("/:service")
-  async getToonByService(@Param("service") service: string) {
-    return this.toonService.getToonService(service);
+  @Get("kakao")
+  async getToonKService(@Res() res) {
+    const kakaoWebtoons = await getKakaoWebtoons();
+    res.status(200).json(kakaoWebtoons);
   }
 
-  @Get("/:service/:date")
-  async getToonByDate(
+  @Get("naver")
+  async getToonNService(@Res() res) {
+    const naverWebtoons = await getNaverWebtoons();
+    res.status(200).json(naverWebtoons);
+  }
+
+  @Get("date")
+  async getToonDate(
     @Param("service") service: string,
-    @Param("date") date: string
+    @Param("date") updateday: string
   ) {
-    return this.toonService.getToonDate(service, date);
+    const webtoons = await getWebtoonsByDate(service, updateday);
+    return webtoons;
   }
 }

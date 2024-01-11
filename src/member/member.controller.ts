@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Patch,
   Post,
   Req,
@@ -23,65 +24,16 @@ export class MemberController {
     private jwtService: JwtService
   ) {}
 
-  @Post("testLogin")
-  async testLogin(@Res() res) {
-    try {
-      const accessToken = await this.memberService.testLogin();
-      res.cookie("Authorization", accessToken, {
-        httpOnly: false,
-        secure: true,
-        path: "/",
-      });
-      res.status(201).send("localLogin ok");
-    } catch (error) {
-      console.error("Error in localLogin:", error);
-      res.status(500).send("Internal Server Error");
-    }
-  }
 
-  private generateAccessToken(user: any): string {
-    const secretKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
-    const expiresIn = "24h";
-    const accessToken = this.jwtService.sign(
-      { user },
-      { expiresIn, secret: secretKey }
-    );
-    return accessToken;
-  }
-
-  @Get("google/callback")
-  @UseGuards(AuthGuard("google"))
-  async googleLoginCallback(@Req() req, @Res() res) {
-    try {
-      const token = this.generateAccessToken(req.user);
-      const accessToken = `Bearer ${token}`;
-      res.cookie("Authorization", accessToken, {
-        httpOnly: false,
-        secure: true,
-        path: "/",
-      });
-      res.redirect("http://localhost:3000");
-    } catch (error) {
-      console.error("Error in googleLoginCallback:", error);
-      res.status(500).send("Internal Server Error");
-    }
-  }
-
-  @Get("kakao/callback")
-  @UseGuards(AuthGuard("kakao"))
-  async kakaoLoginCallback(@Req() req, @Res() res) {
-    try {
-      const token = this.generateAccessToken(req.user.user);
-      const accessToken = `Bearer ${token}`;
-      res.cookie("Authorization", accessToken, {
-        httpOnly: false,
-        secure: true,
-        path: "/",
-      });
-      res.redirect("http://localhost:3000");
-    } catch (error) {
-      console.error("Error in kakaoLoginCallback:", error);
-      res.status(500).send("Internal Server Error");
+  @Post("saveUser")
+  async saveUser(@Req() req, @Res() res){
+    try{
+      const userInfo = req.body;
+    const {email, profile} = userInfo
+    const result = await this.memberService.findByEmailOrSave2(email, profile);
+    res.status(200).send("saveUser Alright!")
+    }catch(e){
+      res.status(400).send("saveUser failed")
     }
   }
 
