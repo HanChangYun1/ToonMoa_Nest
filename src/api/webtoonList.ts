@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-interface WebtoonInfo {
+export interface WebtoonInfo {
   _id: string;
   webtoonId: number;
   title: string;
@@ -14,7 +14,7 @@ interface WebtoonInfo {
   additional: AdditionalInfo;
 }
 
-interface AdditionalInfo {
+export interface AdditionalInfo {
   new: boolean;
   rest: boolean;
   up: boolean;
@@ -22,22 +22,22 @@ interface AdditionalInfo {
   singularityList: string[];
 }
 
-interface ApiResponse {
+export interface ApiResponse {
   webtoons: WebtoonInfo[];
 }
 
-export async function WebtoonList(
+const apiURL = "https://korea-webtoon-api.herokuapp.com";
+
+export async function webtoonList(
   page: number = 0,
   perPage: number = 10,
   service: string | undefined = undefined,
   updateDay: string | undefined = undefined
 ): Promise<WebtoonInfo[]> {
   try {
-    const apiURL = "https://korea-webtoon-api.herokuapp.com";
-    const params = { page, perPage, service, updateDay };
-    const response: AxiosResponse<ApiResponse> = await axios.get(apiURL, {
-      params,
-    });
+    const response: AxiosResponse<ApiResponse> = await axios.get(
+      `${apiURL}/?service=${service}`
+    );
     const data = response.data;
 
     if (data && Array.isArray(data.webtoons)) {
@@ -60,12 +60,18 @@ export async function WebtoonList(
   }
 }
 
-export async function WebtoonServiceList(service: string) {
-  const serviceWebtoons = await WebtoonList(0, 10, service);
-  return serviceWebtoons;
+export async function getWebtoonsByService(service: string) {
+  return webtoonList(0, 10, service);
 }
 
-export async function WebtoonDateList(service: string, updateday: string) {
-  const dateWebtoons = await WebtoonList(0, 10, service, updateday);
-  return dateWebtoons;
+export async function getKakaoWebtoons() {
+  return getWebtoonsByService("kakao");
+}
+
+export async function getNaverWebtoons() {
+  return getWebtoonsByService("naver");
+}
+
+export async function getWebtoonsByDate(service: string, updateday: string) {
+  return webtoonList(0, 10, service, updateday);
 }
