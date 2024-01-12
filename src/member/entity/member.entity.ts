@@ -1,12 +1,11 @@
+import { Gallery } from "src/gallery/entity/gallery.entity";
 import { Comment } from "src/comment/entity/comment.entity";
 import { Like } from "src/like/entity/like.entity";
-import { SearchHistory } from "src/search/entity/search.entity";
 import {
   BaseEntity,
   Column,
   Entity,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -21,17 +20,11 @@ export class Member extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
-  phonenum: string;
-
   @Column()
   photo: string;
 
-  @Column({ nullable: true, unique: true })
-  connectKey?: string;
-
-  @Column({ nullable: true, unique: true })
-  secretKey?: string;
+  @OneToMany(() => Gallery, (gallery) => gallery.member, { cascade: ['remove'] })
+  gallerys: Gallery[];
 
   @OneToMany(() => Like, (like) => like.member)
   likes: Like[];
@@ -40,7 +33,4 @@ export class Member extends BaseEntity {
     cascade: ["remove"],
   })
   comments: Comment[];
-
-  @OneToMany(() => SearchHistory, (searchHistory) => searchHistory.member)
-  searchHistory: SearchHistory[];
 }
