@@ -27,24 +27,28 @@ export interface ApiResponse {
 }
 
 const apiURL = "https://korea-webtoon-api.herokuapp.com";
+let currentPage = 0;
 
-export async function webtoonList(
-  page: number = 0,
+async function webtoonList(
   perPage: number = 10,
   service: string | undefined = undefined,
-  updateDay: string | undefined = undefined
+  sort: string | undefined = undefined
 ): Promise<WebtoonInfo[]> {
   try {
     const response: AxiosResponse<ApiResponse> = await axios.get(
-      `${apiURL}/?service=${service}`
+      `${apiURL}/?service=${service}&page=${currentPage}&perPage=${perPage}&sort=${sort}`
     );
     const data = response.data;
-
     if (data && Array.isArray(data.webtoons)) {
-      const sortedWebtoons = data.webtoons.sort(
-        (a, b) => (b.fanCount || 0) - (a.fanCount || 0)
-      );
-      return sortedWebtoons.map((webtoon) => ({
+      const webtoons = data.webtoons;
+      if (webtoons.length > 0) {
+        console.log(`Page ${currentPage + 1}:`, webtoons);
+        currentPage++;
+      } else {
+        console.log("No more webtoons to fetch.");
+      }
+
+      return webtoons.map((webtoon) => ({
         ...webtoon,
         updateDays: Array.isArray(webtoon.updateDays)
           ? webtoon.updateDays.join(", ")
@@ -60,8 +64,12 @@ export async function webtoonList(
   }
 }
 
+export async function getWebtoonsByUpdateDate(service: string, date: string) {
+  return webtoonList(10, service, date);
+}
+
 export async function getWebtoonsByService(service: string) {
-  return webtoonList(0, 10, service);
+  return webtoonList(10, service);
 }
 
 export async function getKakaoWebtoons() {
@@ -70,4 +78,12 @@ export async function getKakaoWebtoons() {
 
 export async function getNaverWebtoons() {
   return getWebtoonsByService("naver");
+}
+
+export async function getKakaoWebtoonsByDate(date: string) {
+  return getWebtoonsByUpdateDate("kakao", date);
+}
+
+export async function getNaverWebtoonsByDate(date: string) {
+  return getWebtoonsByUpdateDate("naver", date);
 }
