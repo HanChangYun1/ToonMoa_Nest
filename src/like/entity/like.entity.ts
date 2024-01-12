@@ -1,4 +1,5 @@
 import { Comment } from "src/comment/entity/comment.entity";
+import { Gallery } from "src/gallery/entity/gallery.entity";
 import { Member } from "src/member/entity/member.entity";
 import {
   BaseEntity,
@@ -15,23 +16,10 @@ export class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  service: string;
-
-  @Column()
-  webtoonId: string;
-
-  @Column({ nullable: true })
-  episode: string;
+  @ManyToOne(() => Gallery, gallery => gallery.likes, {onDelete: "CASCADE"})
+  gallery: Gallery
 
   @ManyToOne(() => Member, (member) => member.likes, { onDelete: "CASCADE" })
   @JoinColumn()
   member: Member;
-
-  @ManyToOne(() => Comment, (comment) => comment.likes, {
-    nullable: true,
-    onDelete: "CASCADE",
-  })
-  @JoinColumn()
-  comment: Comment;
 }

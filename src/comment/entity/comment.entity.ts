@@ -1,3 +1,4 @@
+import { Gallery } from "src/gallery/entity/gallery.entity";
 import { Like } from "src/like/entity/like.entity";
 import { Member } from "src/member/entity/member.entity";
 import {
@@ -16,32 +17,17 @@ export class Comment extends BaseEntity {
   id: number;
 
   @Column()
-  service: string;
-
-  @Column()
-  webtoonId: string;
-
-  @Column()
   content: string;
 
   @Column({ default: false })
   isRemoved: boolean;
 
-  @ManyToOne(() => Comment, (parent) => parent.children, { nullable: true })
-  @JoinColumn({ name: "parentId" })
-  parent: Comment;
-
-  @OneToMany(() => Comment, (children) => children.parent, {
-    nullable: true,
-    cascade: ["remove"],
-  })
-  @JoinColumn()
-  children: Comment[];
-
   @ManyToOne(() => Member, (member) => member.comments)
   @JoinColumn()
   member: Member;
 
-  @OneToMany(() => Like, (like) => like.comment, { nullable: true })
-  likes: Like[];
+  @ManyToOne(() => Gallery, (gallery) => gallery.comments)
+  @JoinColumn()
+  gallery: Gallery;
+
 }
