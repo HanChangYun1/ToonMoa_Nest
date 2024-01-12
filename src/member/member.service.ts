@@ -11,10 +11,10 @@ import { Storage } from "@google-cloud/storage";
 export class MemberService {
   constructor(
     @InjectRepository(Member)
-    private memberRepository: Repository<Member>,
+    private memberRepository: Repository<Member>
   ) {}
-  
-  async findByEmailOrSave(email, profile){
+
+  async findByEmailOrSave(email, profile) {
     const name = profile.nickname;
     const photo = profile.profile_image_url;
     const isUser = await this.getUser(email);
@@ -44,6 +44,4 @@ export class MemberService {
       console.error("잘못된 유저정보입니다:", e);
     }
   }
-
-  
 }
