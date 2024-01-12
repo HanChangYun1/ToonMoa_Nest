@@ -5,13 +5,11 @@ import {
   Res,
 } from "@nestjs/common";
 import { MemberService } from "./member.service";
-import { JwtService } from "@nestjs/jwt";
 
 @Controller("member")
 export class MemberController {
   constructor(
     private readonly memberService: MemberService,
-    private jwtService: JwtService
   ) {}
 
 

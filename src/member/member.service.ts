@@ -13,9 +13,7 @@ export class MemberService {
     @InjectRepository(Member)
     private memberRepository: Repository<Member>,
   ) {}
-
-
- 
+  
   async findByEmailOrSave(email, profile){
     const name = profile.nickname;
     const photo = profile.profile_image_url;

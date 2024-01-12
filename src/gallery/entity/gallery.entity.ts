@@ -8,8 +8,8 @@ export class Gallery extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  contents: string;
+  @Column("text", {array: true})
+  contents: string[];
 
   @OneToMany(() => Comment, comment => comment.gallery , { cascade: ["remove"]})
   comments: Comment[];
