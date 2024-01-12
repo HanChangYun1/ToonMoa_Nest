@@ -71,7 +71,3 @@ export async function getKakaoWebtoons() {
 export async function getNaverWebtoons() {
   return getWebtoonsByService("naver");
 }
-
-export async function getWebtoonsByDate(service: string, updateday: string) {
-  return webtoonList(0, 10, service, updateday);
-}

@@ -1,9 +1,6 @@
 import { Controller, Get, Query, Param, Req, Res } from "@nestjs/common";
-import {
-  getKakaoWebtoons,
-  getNaverWebtoons,
-  getWebtoonsByDate,
-} from "src/api/webtoonList";
+import { getKakaoWebtoons, getNaverWebtoons } from "src/api/webtoonList";
+import { webtoonSearch } from "src/api/webtoonSearch";
 
 @Controller("toon")
 export class ToonController {
@@ -19,12 +16,9 @@ export class ToonController {
     res.status(200).json(naverWebtoons);
   }
 
-  @Get("date")
-  async getToonDate(
-    @Param("service") service: string,
-    @Param("date") updateday: string
-  ) {
-    const webtoons = await getWebtoonsByDate(service, updateday);
-    return webtoons;
+  @Get(":title")
+  async getToonByTitle(@Param("title") title: string, @Res() res) {
+    const webtoon = await webtoonSearch(title);
+    res.status(200).json(webtoon);
   }
 }
