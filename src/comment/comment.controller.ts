@@ -15,22 +15,32 @@ import { CommentService } from "./comment.service";
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Post("/:service/:webtoonId")
+  @Post("")
   async createComment(
-    @Req() req,
     @Res() res,
-    @Param("service") service: string,
-    @Param("webtoonId") webtoonId: string,
+    @Body("email") email: string,
+    @Body("galleryId") galleryId: string,
     @Body("content") content: string
   ) {
-    const token = req.cookies.Authorization;
-    const result = await this.commentService.createComment(
-      token,
-      service,
-      webtoonId,
-      content
-    );
-    res.json(result);
+    try {
+      const result = await this.commentService.createComment(
+        email,
+        galleryId,
+        content
+      );
+      res.status(200).json(result);
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
+  @Post("get")
+  async getCommentList(@Res() res, @Body("galleryId") galleryId: string) {
+    try {
+      const result = await this.commentService.getCommentList(galleryId);
+      res.status(200).json(result);
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
 }
