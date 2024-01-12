@@ -3,10 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { MemberModule } from "./member/member.module";
 import { ToonModule } from "./toon/toon.module";
-import { SearchModule } from "./search/search.module";
-import { SocketModule } from "./socket/socket.module";
-import { LikeModule } from './like/like.module';
-import { CommentModule } from './comment/comment.module';
+import { LikeModule } from "./like/like.module";
+import { CommentModule } from "./comment/comment.module";
 
 @Module({
   imports: [
@@ -23,8 +21,6 @@ import { CommentModule } from './comment/comment.module';
     }),
     MemberModule,
     ToonModule,
-    SearchModule,
-    SocketModule,
     LikeModule,
     CommentModule,
   ],
