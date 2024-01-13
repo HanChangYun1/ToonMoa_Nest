@@ -41,6 +41,20 @@ export class GalleryService {
     return gallery;
   }
 
+  async getGalleryById(id: number): Promise<Gallery> {
+    const gallery = await this.galleryRepository
+      .createQueryBuilder("gallery")
+      .leftJoinAndSelect("gallery.member", "member")
+      .where("gallery.id = :galleryId", { galleryId: id })
+      .getOne();
+
+    if (!gallery) {
+      throw new Error(`Gallery with ID ${id} not found`);
+    }
+
+    return gallery;
+  }
+
   async getAllGallery(page: number = 1) {
     const galleryList = await this.galleryRepository
       .createQueryBuilder("gallery")

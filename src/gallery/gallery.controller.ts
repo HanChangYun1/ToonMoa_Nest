@@ -1,6 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
+  NotFoundException,
+  Param,
   Post,
   Req,
   Res,
@@ -26,6 +29,16 @@ export class GalleryController {
       res.status(200).send(result);
     } catch (e) {
       throw new Error(e);
+    }
+  }
+
+  @Get(":id")
+  async getGalleryById(@Param("id") id: number) {
+    try {
+      const gallery = await this.galleryService.getGalleryById(id);
+      return gallery;
+    } catch (error) {
+      throw new NotFoundException(`Gallery with ID ${id} not found`);
     }
   }
 

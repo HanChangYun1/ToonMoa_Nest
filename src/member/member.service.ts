@@ -1,11 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Member } from "./entity/member.entity";
 import { Repository } from "typeorm";
-import { randomUUID } from "crypto";
-import { JwtService } from "@nestjs/jwt";
-import { UpdateUserDto } from "./dto/updateuser.dto";
-import { Storage } from "@google-cloud/storage";
 
 @Injectable()
 export class MemberService {

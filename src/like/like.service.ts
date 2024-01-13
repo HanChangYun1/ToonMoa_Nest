@@ -3,7 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Like } from "./entity/like.entity";
 import { Repository } from "typeorm";
 import { MemberService } from "src/member/member.service";
-import { CommentService } from "src/comment/comment.service";
 import { GalleryService } from "src/gallery/gallery.service";
 
 @Injectable()

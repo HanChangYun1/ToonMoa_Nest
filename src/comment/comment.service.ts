@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Comment } from "./entity/comment.entity";
-import { Repository, Transaction } from "typeorm";
+import { Repository } from "typeorm";
 import { MemberService } from "src/member/member.service";
 import { GalleryService } from "src/gallery/gallery.service";
 
