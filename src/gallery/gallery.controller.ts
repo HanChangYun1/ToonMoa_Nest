@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  NotFoundException,
   Param,
+  Patch,
   Post,
-  Req,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -33,17 +33,17 @@ export class GalleryController {
   }
 
   @Get(":id")
-  async getGalleryById(@Param("id") id: number) {
+  async getGalleryOne(@Param("id") id: number, @Res() res) {
     try {
-      const gallery = await this.galleryService.getGalleryById(id);
-      return gallery;
-    } catch (error) {
-      throw new NotFoundException(`Gallery with ID ${id} not found`);
+      const result = await this.galleryService.getGalleryOne(id);
+      res.status(200).send(result);
+    } catch (e) {
+      throw new Error(e);
     }
   }
 
-  @Post("getAll")
-  async getAllGallery(@Req() req, @Res() res, @Body("page") page) {
+  @Post("all")
+  async getAllGallery(@Res() res, @Body("page") page) {
     try {
       const result = await this.galleryService.getAllGallery(page);
       res.status(200).send(result);
@@ -52,22 +52,10 @@ export class GalleryController {
     }
   }
 
-  @Post("getMy")
+  @Post("my")
   async getMyGallery(@Res() res, @Body("email") email, @Body("page") page) {
     try {
       const result = await this.galleryService.getMyGallery(email, page);
-      res.status(200).send(result);
-    } catch (e) {
-      throw new Error(e);
-    }
-  }
-
-  @Get("/:id")
-  async getById(@Res() res, @Param("id") id: string) {
-    try {
-      const result = await this.galleryService.getGallery(id);
-      console.log(result);
-
       res.status(200).send(result);
     } catch (e) {
       throw new Error(e);

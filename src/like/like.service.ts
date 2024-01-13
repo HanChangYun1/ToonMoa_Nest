@@ -16,11 +16,7 @@ export class LikeService {
 
   async handleLike(email, galleryId) {
     const member = await this.memberService.getUser(email);
-    if (!member) return "잘못된 유저정보입니다.";
-
-    const gallery = await this.galleryService.getGallery(galleryId);
-    if (!gallery) return "잘못된 갤러리정보입니다.";
-
+    const gallery = await this.galleryService.getGalleryOne(galleryId);
     const existLike = await this.likeRepository
       .createQueryBuilder("like")
       .where("like.member.id = :memberId", { memberId: member.id })
@@ -31,22 +27,17 @@ export class LikeService {
         member,
         gallery,
       });
-      return "좋아요 성공";
     } else {
       await this.likeRepository.remove(existLike);
-      return "좋아요 취소 완료";
     }
   }
 
   async getCount(galleryId) {
-    const gallery = await this.galleryService.getGallery(galleryId);
-    if (!gallery) return "잘못된 갤러리정보입니다.";
-
+    const gallery = await this.galleryService.getGalleryOne(galleryId);
     const galleryCount = await this.likeRepository
       .createQueryBuilder("like")
       .where("like.gallery.id = :galleryId", { galleryId: gallery.id })
       .getCount();
-
     return galleryCount;
   }
 }

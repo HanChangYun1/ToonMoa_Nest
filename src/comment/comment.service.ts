@@ -16,24 +16,17 @@ export class CommentService {
 
   async createComment(email, galleryId, content) {
     const member = await this.memberService.getUser(email);
-    if (!member) return "잘못된 유저정보입니다.";
-
-    const gallery = await this.galleryService.getGallery(galleryId);
-    if (!gallery) return "잘못된 갤러리정보입니다.";
-
+    const gallery = await this.galleryService.getGalleryOne(galleryId);
     const comment = await this.commentRepository.save({
       member,
       gallery,
       content,
     });
-
     return comment;
   }
 
   async getCommentList(galleryId) {
-    const gallery = await this.galleryService.getGallery(galleryId);
-    if (!gallery) return "잘못된 갤러리정보입니다.";
-
+    const gallery = await this.galleryService.getGalleryOne(galleryId);
     const commentList = await this.commentRepository
       .createQueryBuilder("comment")
       .leftJoinAndSelect("comment.member", "member")
@@ -44,18 +37,12 @@ export class CommentService {
 
   async updateComment(commentId, content) {
     const comment = await this.commentRepository.findOne(commentId);
-    if (!comment) return "댓글을 찾을 수 없습니다.";
-
     comment.content = content;
     await this.commentRepository.save(comment);
-    return "댓글이 성공적으로 수정되었습니다.";
   }
 
   async deleteComment(commentId) {
     const comment = await this.commentRepository.findOne(commentId);
-    if (!comment) return "댓글을 찾을 수 없습니다.";
-
     await this.commentRepository.remove(comment);
-    return "댓글이 성공적으로 삭제되었습니다.";
   }
 }
