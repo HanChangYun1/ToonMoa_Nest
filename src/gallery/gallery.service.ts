@@ -25,15 +25,12 @@ export class GalleryService {
   async createGallery(email: string, photos) {
     const contents = [];
     const member = await this.memberService.getUser(email);
-
-    if (!member) return "잘못된 유저정보 입니다.";
     if (photos && photos.length > 0) {
       for (const photo of photos) {
         const photoUrl = await this.imageUpload(photo, member);
         contents.push(photoUrl);
       }
     }
-
     const gallery = await this.galleryRepository.save({
       member,
       contents: contents,
@@ -41,17 +38,12 @@ export class GalleryService {
     return gallery;
   }
 
-  async getGalleryById(id: number): Promise<Gallery> {
+  async getGalleryOne(id: number): Promise<Gallery> {
     const gallery = await this.galleryRepository
       .createQueryBuilder("gallery")
       .leftJoinAndSelect("gallery.member", "member")
       .where("gallery.id = :galleryId", { galleryId: id })
       .getOne();
-
-    if (!gallery) {
-      throw new Error(`Gallery with ID ${id} not found`);
-    }
-
     return gallery;
   }
 
@@ -68,8 +60,6 @@ export class GalleryService {
 
   async getMyGallery(email: string, page: number = 1) {
     const member = await this.memberService.getUser(email);
-    if (!member) return "잘못된 유저정보 입니다.";
-
     const galleryList = await this.galleryRepository
       .createQueryBuilder("gallery")
       .leftJoinAndSelect("gallery.member", "member")
@@ -83,11 +73,7 @@ export class GalleryService {
 
   async getDetailGallery(email: string, galleryId) {
     const member = await this.memberService.getUser(email);
-    if (!member) return "잘못된 유저정보 입니다.";
-
-    const gallery = await this.getGallery(galleryId);
-    if (!gallery) return "잘못된 갤러리정보 입니다";
-
+    const gallery = await this.getGalleryOne(galleryId);
     const galleryDetail = await this.galleryRepository
       .createQueryBuilder("gallery")
       .leftJoinAndSelect("gallery.member", "member")
@@ -99,14 +85,8 @@ export class GalleryService {
   }
 
   async updateGallery(email: string, photos, galleryId) {
-    const contents = [];
     const member = await this.memberService.getUser(email);
-    if (!member) return "잘못된 유저정보 입니다.";
-
-    const gallery = await this.getGallery(galleryId);
-    if (!gallery) return "해당 갤러리가 없습니다";
-    if (gallery.member.id != member.id) return "권한이 없습니다";
-
+    const gallery = await this.getGalleryOne(galleryId);
     if (photos && photos.length > 0) {
       gallery.contents = [];
       for (const photo of photos) {
@@ -114,7 +94,6 @@ export class GalleryService {
         gallery.contents.push(photoUrl);
       }
     }
-
     const updateGallery = await this.galleryRepository.save(gallery);
     return updateGallery;
   }
@@ -122,36 +101,17 @@ export class GalleryService {
   async deleteGallery(email: string, galleryId) {
     try {
       const member = await this.memberService.getUser(email);
-      if (!member) return "잘못된 유저정보 입니다.";
-
-      const gallery = await this.getGallery(galleryId);
-      if (!gallery) return "해당 갤러리가 없습니다";
-      if (gallery.member.id != member.id) return "권한이 없습니다";
-
+      const gallery = await this.getGalleryOne(galleryId);
       await this.galleryRepository.remove(gallery);
-
-      return "갤러리가 삭제되었습니다.";
     } catch (e) {
       throw new Error(e);
     }
   }
 
-  async getGallery(galleryId: string): Promise<Gallery> {
-    const gallery = await this.galleryRepository
-      .createQueryBuilder("gallery")
-      .leftJoinAndSelect("gallery.member", "member")
-      .where("gallery.id = :galleryId", { galleryId: Number(galleryId) })
-      .getOne();
-    return gallery;
-  }
-
   async imageUpload(photo, member: Member) {
     const fileName = `${Date.now()}_${randomUUID()}`;
-
     const bucket = this.storage.bucket(this.bucketName);
-
     const blob = bucket.file(fileName);
-
     const blobStream = blob.createWriteStream();
 
     return await new Promise<string>((resolve, reject) => {
