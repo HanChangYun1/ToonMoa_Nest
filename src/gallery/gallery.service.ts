@@ -81,12 +81,30 @@ export class GalleryService {
     return galleryList;
   }
 
+  async getDetailGallery(email: string, galleryId) {
+    const member = await this.memberService.getUser(email);
+    if (!member) return "잘못된 유저정보 입니다.";
+
+    const gallery = await this.getGallery(galleryId);
+    if (!gallery) return "잘못된 갤러리정보 입니다";
+
+    const galleryDetail = await this.galleryRepository
+      .createQueryBuilder("gallery")
+      .leftJoinAndSelect("gallery.member", "member")
+      .where("gallery.member.id = :memberId", { memberId: member.id })
+      .andWhere("gallery.id = :galleryId", { galleryId: gallery.id })
+      .orderBy("gallery.id", "DESC")
+      .getOne();
+    return galleryDetail;
+  }
+
   async updateGallery(email: string, photos, galleryId) {
     const contents = [];
     const member = await this.memberService.getUser(email);
     if (!member) return "잘못된 유저정보 입니다.";
 
     const gallery = await this.getGallery(galleryId);
+    if (!gallery) return "해당 갤러리가 없습니다";
     if (gallery.member.id != member.id) return "권한이 없습니다";
 
     if (photos && photos.length > 0) {
@@ -107,6 +125,7 @@ export class GalleryService {
       if (!member) return "잘못된 유저정보 입니다.";
 
       const gallery = await this.getGallery(galleryId);
+      if (!gallery) return "해당 갤러리가 없습니다";
       if (gallery.member.id != member.id) return "권한이 없습니다";
 
       await this.galleryRepository.remove(gallery);
