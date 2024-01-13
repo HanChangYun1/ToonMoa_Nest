@@ -1,4 +1,3 @@
-import { Comment } from "src/comment/entity/comment.entity";
 import { Gallery } from "src/gallery/entity/gallery.entity";
 import { Member } from "src/member/entity/member.entity";
 import {
