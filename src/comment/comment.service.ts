@@ -40,4 +40,21 @@ export class CommentService {
       .getMany();
     return commentList;
   }
+
+  async updateComment(commentId, content) {
+    const comment = await this.commentRepository.findOne(commentId);
+    if (!comment) return "댓글을 찾을 수 없습니다.";
+
+    comment.content = content;
+    await this.commentRepository.save(comment);
+    return "댓글이 성공적으로 수정되었습니다.";
+  }
+
+  async deleteComment(commentId) {
+    const comment = await this.commentRepository.findOne(commentId);
+    if (!comment) return "댓글을 찾을 수 없습니다.";
+
+    await this.commentRepository.remove(comment);
+    return "댓글이 성공적으로 삭제되었습니다.";
+  }
 }
