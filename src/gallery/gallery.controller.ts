@@ -62,6 +62,18 @@ export class GalleryController {
     }
   }
 
+  @Get("/:id")
+  async getById(@Res() res, @Param("id") id: string) {
+    try {
+      const result = await this.galleryService.getGallery(id);
+      console.log(result);
+
+      res.status(200).send(result);
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+
   @Post("update")
   @UseInterceptors(FilesInterceptor("files", 6))
   async updateGallery(
