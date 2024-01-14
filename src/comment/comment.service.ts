@@ -31,6 +31,7 @@ export class CommentService {
       .createQueryBuilder("comment")
       .leftJoinAndSelect("comment.member", "member")
       .where("comment.gallery.id = :galleryId", { galleryId: gallery.id })
+      .orderBy("gallery.id", "ASC")
       .getMany();
     return commentList;
   }
