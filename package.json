@@ -6,6 +6,8 @@
   "private": true,
   "license": "Team Weavers",
   "scripts": {
+    "prestart:prod": "yarn rimraf dist && yarn build",
+    "web": "yarn start:prod",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
