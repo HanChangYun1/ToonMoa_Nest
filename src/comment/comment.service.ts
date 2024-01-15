@@ -30,6 +30,7 @@ export class CommentService {
     const commentList = await this.commentRepository
       .createQueryBuilder("comment")
       .leftJoinAndSelect("comment.member", "member")
+      .leftJoinAndSelect("comment.gallery", "gallery")
       .where("comment.gallery.id = :galleryId", { galleryId: gallery.id })
       .orderBy("gallery.id", "ASC")
       .getMany();
