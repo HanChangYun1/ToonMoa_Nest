@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Gallery } from "./entity/gallery.entity";
 import { Repository } from "typeorm";
@@ -31,7 +31,7 @@ export class GalleryService {
     if (photos && photos.length > 0) {
       for (const photo of photos) {
         const photoUrl = await this.imageUpload(photo, member);
-        console.log(photoUrl);
+        Logger.debug(`photoUrl: ${photoUrl}`);
 
         contents.push(photoUrl);
       }

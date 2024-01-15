@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -25,8 +26,7 @@ export class GalleryController {
     @Body("email") email
   ) {
     try {
-      console.log(files, email);
-
+      Logger.debug(`Received files: ${files}, email: ${email}`);
       const result = await this.galleryService.createGallery(email, files);
       res.status(200).send(result);
     } catch (e) {
