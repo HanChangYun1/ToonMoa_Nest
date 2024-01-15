@@ -17,7 +17,10 @@ export class GalleryService {
   ) {
     this.storage = new Storage({
       projectId: "toonmoa",
-      keyFilename: "./toonmoa-3bbc9ada2044.json",
+      credentials: {
+        client_email: process.env.GCP_CLIENTEMAIL,
+        private_key: process.env.GCP_PRIVATEKEY.replace(/\\n/g, "\n"),
+      },
     });
   }
   private readonly bucketName = process.env.GCP_BUCKETNAME;
@@ -112,7 +115,9 @@ export class GalleryService {
     const fileName = `${Date.now()}_${randomUUID()}`;
     const bucket = this.storage.bucket(this.bucketName);
     const blob = bucket.file(fileName);
+    console.log(blob);
     const blobStream = blob.createWriteStream();
+    console.log(blobStream);
 
     return await new Promise<string>((resolve, reject) => {
       blobStream.on("error", (error) => {
