@@ -36,8 +36,12 @@ async function webtoonList(
 ): Promise<WebtoonInfo[]> {
   try {
     const response: AxiosResponse<ApiResponse> = await axios.get(
-      `${apiURL}/?service=${service}&page=${currentPage}&perPage=${perPage}&updateDay=${date}`
+      `${apiURL}/?perPage=${perPage}&page=${currentPage}&service=${service}&updateDay=${date}`
     );
+    console.log(
+      `Url: ${apiURL}/?perPage=${perPage}&page=${currentPage}&service=${service}&updateDay=${date}`
+    );
+
     const data = response.data;
     if (data && Array.isArray(data.webtoons)) {
       const webtoons = data.webtoons;
