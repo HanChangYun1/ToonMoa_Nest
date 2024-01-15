@@ -26,6 +26,7 @@ import { GalleryModule } from "./gallery/gallery.module";
       ssl: {
         rejectUnauthorized: false,
       },
+      autoLoadEntities: true,
     }),
     MemberModule,
     ToonModule,
