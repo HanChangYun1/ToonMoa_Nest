@@ -31,6 +31,8 @@ export class GalleryService {
     if (photos && photos.length > 0) {
       for (const photo of photos) {
         const photoUrl = await this.imageUpload(photo, member);
+        console.log(photoUrl);
+
         contents.push(photoUrl);
       }
     }
