@@ -31,7 +31,6 @@ export class GalleryService {
     if (photos && photos.length > 0) {
       for (const photo of photos) {
         const photoUrl = await this.imageUpload(photo, member);
-        Logger.debug(`photoUrl: ${photoUrl}`);
 
         contents.push(photoUrl);
       }
@@ -117,9 +116,7 @@ export class GalleryService {
     const fileName = `${Date.now()}_${randomUUID()}`;
     const bucket = this.storage.bucket(this.bucketName);
     const blob = bucket.file(fileName);
-    console.log(blob);
     const blobStream = blob.createWriteStream();
-    console.log(blobStream);
 
     return await new Promise<string>((resolve, reject) => {
       blobStream.on("error", (error) => {

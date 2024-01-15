@@ -32,11 +32,11 @@ let currentPage = 0;
 async function webtoonList(
   perPage: number = 10,
   service: string | undefined = undefined,
-  sort: string | undefined = undefined
+  date: string | undefined = undefined
 ): Promise<WebtoonInfo[]> {
   try {
     const response: AxiosResponse<ApiResponse> = await axios.get(
-      `${apiURL}/?service=${service}&page=${currentPage}&perPage=${perPage}&sort=${sort}`
+      `${apiURL}/?service=${service}&page=${currentPage}&perPage=${perPage}&updateDay=${date}`
     );
     const data = response.data;
     if (data && Array.isArray(data.webtoons)) {
