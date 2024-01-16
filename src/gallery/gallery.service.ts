@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Gallery } from "./entity/gallery.entity";
 import { Repository } from "typeorm";
@@ -17,7 +17,10 @@ export class GalleryService {
   ) {
     this.storage = new Storage({
       projectId: "toonmoa",
-      keyFilename: "./toonmoa-3bbc9ada2044.json",
+      credentials: {
+        client_email: process.env.GCP_CLIENTEMAIL,
+        private_key: process.env.GCP_PRIVATEKEY.replace(/\\n/g, "\n"),
+      },
     });
   }
   private readonly bucketName = process.env.GCP_BUCKETNAME;

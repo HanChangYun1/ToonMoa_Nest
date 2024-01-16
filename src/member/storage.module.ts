@@ -8,7 +8,10 @@ import { Storage } from "@google-cloud/storage";
       provide: Storage,
       useValue: new Storage({
         projectId: "toonmoa",
-        keyFilename: "./toonmoa-3bbc9ada2044.json",
+        credentials: {
+          client_email: process.env.GCP_CLIENTEMAIL,
+          private_key: process.env.GCP_PRIVATEKEY,
+        },
       }),
     },
   ],

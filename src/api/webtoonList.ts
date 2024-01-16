@@ -27,22 +27,29 @@ export interface ApiResponse {
 }
 
 const apiURL = "https://korea-webtoon-api.herokuapp.com";
-let currentPage = 0;
 
 async function webtoonList(
   perPage: number = 10,
   service: string | undefined = undefined,
-  sort: string | undefined = undefined
+  date: string | undefined = undefined
 ): Promise<WebtoonInfo[]> {
   try {
-    const response: AxiosResponse<ApiResponse> = await axios.get(
-      `${apiURL}/?service=${service}&page=${currentPage}&perPage=${perPage}&sort=${sort}`
-    );
+    let currentPage = 0;
+    let response: AxiosResponse<ApiResponse>;
+    if (date == undefined) {
+      response = await axios.get(
+        `${apiURL}/?perPage=${perPage}&page=${currentPage}&service=${service}`
+      );
+    } else {
+      response = await axios.get(
+        `${apiURL}/?perPage=${perPage}&page=${currentPage}&service=${service}&updateDay=${date}`
+      );
+    }
+
     const data = response.data;
     if (data && Array.isArray(data.webtoons)) {
       const webtoons = data.webtoons;
       if (webtoons.length > 0) {
-        console.log(`Page ${currentPage + 1}:`, webtoons);
         currentPage++;
       } else {
         console.log("No more webtoons to fetch.");
