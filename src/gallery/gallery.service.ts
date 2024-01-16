@@ -89,10 +89,9 @@ export class GalleryService {
 
   async updateGallery(email: string, photos, galleryId) {
     const member = await this.memberService.getUser(email);
-    console.log(member);
 
     const gallery = await this.getGalleryOne(galleryId);
-    console.log(gallery.contents);
+    console.log(photos);
 
     if (photos && photos.length > 0) {
       gallery.contents = [];
