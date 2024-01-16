@@ -27,7 +27,6 @@ export interface ApiResponse {
 }
 
 const apiURL = "https://korea-webtoon-api.herokuapp.com";
-let currentPage = 0;
 
 async function webtoonList(
   perPage: number = 10,
@@ -47,15 +46,10 @@ async function webtoonList(
       );
     }
 
-    console.log(
-      `Url: ${apiURL}/?perPage=${perPage}&page=${currentPage}&service=${service}&updateDay=${date}`
-    );
-
     const data = response.data;
     if (data && Array.isArray(data.webtoons)) {
       const webtoons = data.webtoons;
       if (webtoons.length > 0) {
-        console.log(`Page ${currentPage + 1}:`, webtoons);
         currentPage++;
       } else {
         console.log("No more webtoons to fetch.");
