@@ -89,7 +89,9 @@ export class GalleryService {
 
   async updateGallery(email: string, photos, galleryId) {
     const member = await this.memberService.getUser(email);
+
     const gallery = await this.getGalleryOne(galleryId);
+
     if (photos && photos.length > 0) {
       gallery.contents = [];
       for (const photo of photos) {
@@ -97,6 +99,7 @@ export class GalleryService {
         gallery.contents.push(photoUrl);
       }
     }
+
     const updateGallery = await this.galleryRepository.save(gallery);
     return updateGallery;
   }
