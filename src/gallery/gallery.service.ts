@@ -91,7 +91,6 @@ export class GalleryService {
     const member = await this.memberService.getUser(email);
 
     const gallery = await this.getGalleryOne(galleryId);
-    console.log(photos);
 
     if (photos && photos.length > 0) {
       gallery.contents = [];
@@ -100,7 +99,7 @@ export class GalleryService {
         gallery.contents.push(photoUrl);
       }
     }
-    console.log(gallery.contents);
+
     const updateGallery = await this.galleryRepository.save(gallery);
     return updateGallery;
   }
